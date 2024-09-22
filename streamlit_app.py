@@ -433,7 +433,7 @@ def find_all_instances(dictionaries):
         print("No instances found.")
 
 
-def final_service(input):
+def final_service(txt_before):
     generated_date, finished_date, text_between = read_txt_file(txt_before)
     seperation = seperation_data(text_between)
     service_txt = sros_flatten(seperation.get("Service Configuration"))
