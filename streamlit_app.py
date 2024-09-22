@@ -72,9 +72,8 @@ def sros_flatten(data):
 
     return new_conf
 
-def read_txt_file(file_path):
-    with open(file_path, 'r') as file:
-        lines = file.readlines()
+def read_txt_file(txt):
+        lines = txt.readlines()
 
         # Find the index of the lines containing "# Generated" and "# Finished"
         generated_index = None
