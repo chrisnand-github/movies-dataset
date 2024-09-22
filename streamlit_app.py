@@ -73,28 +73,28 @@ def sros_flatten(data):
     return new_conf
 
 def read_txt_file(txt):
-        lines = txt.readlines()
+    lines = txt.readlines()
 
-        # Find the index of the lines containing "# Generated" and "# Finished"
-        generated_index = None
-        finished_index = None
+    # Find the index of the lines containing "# Generated" and "# Finished"
+    generated_index = None
+    finished_index = None
 
-        for i, line in enumerate(lines):
-            if "# Generated" in line:
-                generated_index = i
-            elif "# Finished" in line:
-                finished_index = i
-                break  # Stop searching once we find the "# Finished" line
+    for i, line in enumerate(lines):
+        if "# Generated" in line:
+            generated_index = i
+        elif "# Finished" in line:
+            finished_index = i
+            break  # Stop searching once we find the "# Finished" line
 
         # Extract text between the lines containing "# Generated" and "# Finished"
-        if generated_index is not None and finished_index is not None:
-            generated_date = lines[generated_index].strip().replace("# Generated ", "")
-            finished_date = lines[finished_index].strip().replace("# Finished ", "")
-            text_between = "".join(lines[generated_index + 1:finished_index])
+    if generated_index is not None and finished_index is not None:
+        generated_date = lines[generated_index].strip().replace("# Generated ", "")
+        finished_date = lines[finished_index].strip().replace("# Finished ", "")
+        text_between = "".join(lines[generated_index + 1:finished_index])
 
-            return generated_date, finished_date, text_between
-        else:
-            return None, None, None
+        return generated_date, finished_date, text_between
+    else:
+        return None, None, None
 def stop_exit_all(data):
     clean =""
     for line in data.split("\n" or "\r"):
