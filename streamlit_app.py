@@ -72,8 +72,11 @@ def sros_flatten(data):
 
     return new_conf
 
-def read_txt_file(txt):
-    lines = txt.readlines()
+def read_txt_file(file):
+    #print(file)
+    lines = [line + '\n' for line in file.splitlines()]
+    #lines = file.splitlines()
+
 
     # Find the index of the lines containing "# Generated" and "# Finished"
     generated_index = None
@@ -86,7 +89,7 @@ def read_txt_file(txt):
             finished_index = i
             break  # Stop searching once we find the "# Finished" line
 
-        # Extract text between the lines containing "# Generated" and "# Finished"
+    # Extract text between the lines containing "# Generated" and "# Finished"
     if generated_index is not None and finished_index is not None:
         generated_date = lines[generated_index].strip().replace("# Generated ", "")
         finished_date = lines[finished_index].strip().replace("# Finished ", "")
@@ -239,17 +242,21 @@ def read_name_from_line(txt):
     except ValueError as e:
         return str(e)
 
-def find_all_txt_files(directory):
-    txt_files = []
 
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            if file.endswith(".cfg") and "bof" not in file:
-                txt_files.append(os.path.join(root, file))
-
-    return txt_files
+import os
 
 
+# def find_all_txt_files(directory):
+#     txt_files = []
+#
+#     for root, dirs, files in os.walk(directory):
+#         for file in files:
+#             if file.endswith(".cfg") and "bof" not in file:
+#                 txt_files.append(os.path.join(root, file))
+#
+#     return txt_files
+
+from collections import defaultdict
 def parse_vprn_data_DHCP(txt):
     vprn_dict = defaultdict(dict)
 
@@ -318,6 +325,11 @@ def parse_vprn_static_routes(input_text):
             vprn_dict[vprn_id].append({static_route_entry: next_hop})
 
     return dict(vprn_dict)
+
+# Example usage
+# directory = "D:/make_service/"
+# txt_files = find_all_txt_files(directory)
+# print(txt_files)
 
 def find_qos(input):
     qos_ingress = {'17815':'120','17804':'104','17813':'103','17812':'102','55000':'104'}
@@ -399,19 +411,6 @@ def make_service(name,sap,rd,dhcp,mtu,address,static):
     return(txt)
 
 
-def save_to_file(directory, filename, content):
-    # Ensure the directory exists
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    # Full path for the file
-    filepath = os.path.join(directory, filename+".txt")
-
-    # Write the content to the file
-    with open(filepath, 'w') as file:
-        file.write(content)
-
-    #print(f"File saved to {filepath}")
 
 def find_all_instances(dictionaries):
     import re
@@ -433,64 +432,43 @@ def find_all_instances(dictionaries):
     else:
         print("No instances found.")
 
-def final(txt_files):
-    for i in txt_files:
-        generated_date, finished_date, text_between = read_txt_file(i)
-        seperation = seperation_data(text_between)
-        service_txt = sros_flatten(seperation.get("Service Configuration"))
-        system_txt = sros_flatten(seperation.get("System Configuration"))
-        name = find(system_txt, "name")
-        name_result = read_name_from_line(name)
-        #print(name_result)
-        address = find(service_txt, "address")
-        #print(address)
-        address_result = parse_vprn_data_address(address)
-        #print(address_result)
-        sap = find(service_txt, "sap")
-        #print(sap)
-        sap_result = parse_vprn_data_SAP(sap)
-        #print(sap_result)
-        rd = find_rd_rt(service_txt)
-        rd_result = parse_vprn_data_RD(rd)
-        #print(rd_result)
-        # print(seperation.get("System Configuration"))
-        # isis_txt = sros_flatten(seperation.get("ISIS (Inst: 3) Configuration"))
-        # print(isis_txt)
-        dhcp = find(service_txt, "dhcp server")
-        dhcp_result = parse_vprn_data_DHCP(dhcp)
-        #print(dhcp)
-        #print(dhcp_result)
-        mtu = find(service_txt, "ip-mtu")
-        ipmtu_result = parse_vprn_mtu_data(mtu)
-        #print(ipmtu_result)
-        static = find(service_txt, "next-hop")
-        #print(static)
-        static_result = parse_vprn_static_routes(static)
-        #print(static_result)
-        #print_result=make_service(name_result,sap_result,rd_result,dhcp_result,ipmtu_result,address_result,static_result)
-        save_to_file(directory,name_result,print_result)
-        network_txt = sros_flatten(seperation.get("Router (Network Side) Configuration"))
-        #print(network_txt)
-        port = find(network_txt, "port")
-        #print(port)
-        address = find(network_txt, "address")
-        #print(address)
-        instance_result =find_all_instances(seperation)
-        #print(instance_result)
-        for i in instance_result:
-            print(i)
-            #print(seperation.get(f"""ISIS (Inst: {i}) Configuration"""))
-        #print(seperation.get("ISIS Configuration"))
-        #print(seperation.get("Router (Network Side) Configuration"))
-        return(print_result)
 
-
-
-
-
-
-
-
+def final_service(input):
+    generated_date, finished_date, text_between = read_txt_file(txt_before)
+    seperation = seperation_data(text_between)
+    service_txt = sros_flatten(seperation.get("Service Configuration"))
+    system_txt = sros_flatten(seperation.get("System Configuration"))
+    name = find(system_txt, "name")
+    name_result = read_name_from_line(name)
+    # print(name_result)
+    address = find(service_txt, "address")
+    # print(address)
+    address_result = parse_vprn_data_address(address)
+    # print(address_result)
+    sap = find(service_txt, "sap")
+    # print(sap)
+    sap_result = parse_vprn_data_SAP(sap)
+    # print(sap_result)
+    rd = find_rd_rt(service_txt)
+    rd_result = parse_vprn_data_RD(rd)
+    # print(rd_result)
+    # print(seperation.get("System Configuration"))
+    # isis_txt = sros_flatten(seperation.get("ISIS (Inst: 3) Configuration"))
+    # print(isis_txt)
+    dhcp = find(service_txt, "dhcp server")
+    dhcp_result = parse_vprn_data_DHCP(dhcp)
+    # print(dhcp)
+    # print(dhcp_result)
+    mtu = find(service_txt, "ip-mtu")
+    ipmtu_result = parse_vprn_mtu_data(mtu)
+    # print(ipmtu_result)
+    static = find(service_txt, "next-hop")
+    # print(static)
+    static_result = parse_vprn_static_routes(static)
+    # print(static_result)
+    print_result = make_service(name_result, sap_result, rd_result, dhcp_result, ipmtu_result, address_result,
+                                static_result)
+    return(print_result)
 
 
 # Streamlit App
@@ -506,7 +484,7 @@ def main():
     if st.button("Convert"):
         if input_text:
             # Call the conversion function
-            #output_text = convert_to_uppercase(input_text)
+            #output_text = final_service(input_text)
             output_text = final(input_text)
             # Display the output on the right side
             st.write("### Converted Text:")
