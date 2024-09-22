@@ -485,7 +485,7 @@ def main():
         if input_text:
             # Call the conversion function
             #output_text = final_service(input_text)
-            output_text = final(input_text)
+            output_text = final_service(input_text)
             # Display the output on the right side
             st.write("### Converted Text:")
             st.text_area("Output Text", output_text, height=200)
