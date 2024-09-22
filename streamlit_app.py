@@ -477,11 +477,11 @@ def main():
     st.title("Text File Uppercase Converter")
 
     # Create a textbox for input text
-    st.write("Paste your text here:")
+    st.write("Copy Paste whole config.cfg here. Other than that, may not work:")
     input_text = st.text_area("Input Text", height=200)
 
     # Create a button to trigger the conversion
-    if st.button("Convert"):
+    if st.button("MAKE SERVICE"):
         if input_text:
             # Call the conversion function
             #output_text = final_service(input_text)
