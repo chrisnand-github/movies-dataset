@@ -489,6 +489,12 @@ def main():
             # Display the output on the right side
             st.write("### Converted Text:")
             st.text_area("Output Text", output_text, height=200)
+            st.download_button(
+                label="Save Result",
+                data=output_text,
+                file_name="converted_text.txt",
+                mime="text/plain"
+            )
         else:
             st.write("Please paste some text to convert.")
 
