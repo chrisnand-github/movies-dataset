@@ -474,7 +474,7 @@ def final_service(txt_before):
 # Streamlit App
 def main():
     # Title of the app
-    st.title("Text File Uppercase Converter")
+    st.title("IXR Service Converter")
 
     # Create a textbox for input text
     st.write("Copy Paste whole config.cfg here. Other than that, may not work:")
